@@ -1,0 +1,66 @@
+{% extends 'teams/base.html' %} {% load static %} {% block content %}
+
+<div class="team-detail-card">
+  <div class="detail-header">
+    <img src="{% static 'images/icon.webp' %}" class="avatar-img" />
+
+    <div>
+      <h2>{{ team.name }}</h2>
+      <h3>Team Overview</h3>
+      <p><b>Department:</b> {{ team.department }}</p>
+      <p><b>Department Head:</b> {{ team.department_head}}</p>
+      <p><b>Team Leader:</b> {{ team.team_leader }}</p>
+    </div>
+  </div>
+
+  <hr />
+
+  <div class="detail-section">
+    <h3>About the Team</h3>
+    <p><b>Team Purpose:</b> {{team.development_focus_area}}</p>
+    <p><b>Skills:</b> {{team.key_skills_technologies}}</p>
+    <hr />
+    <h3>Dependencies</h3>
+
+<div class="dep-box">
+  <h4>⬆ Upstream (we depend on)</h4>
+  <p>{{ team.upstream_dependencies }}</p>
+</div>
+
+<div class="dep-box">
+  <h4>⬇ Downstream (depends on us)</h4>
+  <p>{{ team.downstream_dependencies }}</p>
+</div>
+    <ul>
+      {% for dep in team.dependencies.all %}
+      <li>{{ dep.name }}</li>
+      {% endfor %}
+    </ul>
+    <hr />
+    <h3>Systems & Tools</h3>
+
+    <p><b>Code Repository:</b> {{team.code_repository}}</p>
+    <p><b>Jira Project Name:</b> {{team.jira_project_name}}</p>
+    <p><b>Jira Board Link:</b> {{team.jira_board_link}}</p>
+    <p><b>Team Wiki:</b> {{team.team_wiki}}</p>
+    <p><b>Dependency Type:</b> {{team.dependency_type}}</p>
+  </div>
+
+  <div class="detail-actions">
+    <a href="mailto:{{ team.email }}">
+      <button>Email Team</button>
+    </a>
+
+    <a href="https://calendar.google.com">
+      <button>Schedule Meeting</button>
+    </a>
+  </div>
+
+  <div class="detail-footer">
+    <a href="/">
+      <button>Back to teams</button>
+    </a>
+  </div>
+</div>
+
+{% endblock %}

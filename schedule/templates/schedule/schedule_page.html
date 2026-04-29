@@ -1,0 +1,149 @@
+<!--blenda jasahri - w1976060 - student 4   -->
+{% extends 'base.html' %}
+<!-- Uses Django template inheritance (covered in Django lectures) -->
+{% block title %}Schedule{% endblock %}
+<!-- Custom CSS styling for the schedule page UI (based on UX/UI lecture principles) -->
+{% block extra_styles %}
+.schedule-title {
+    background: #0b4edb;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+}
+
+.schedule-layout {
+    display: flex;
+    gap: 25px;
+    align-items: flex-start;
+}
+
+.schedule-card {
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.meetings-section {
+    flex: 2;
+}
+
+.form-section {
+    flex: 1;
+}
+
+.filter-box {
+    margin-bottom: 20px;
+    background: #f6f8ff;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.meeting-item {
+    background: #f6f8ff;
+    border-left: 6px solid #0b4edb;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.meeting-item p {
+    margin-bottom: 8px;
+}
+
+label {
+    font-weight: bold;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 9px;
+    margin-top: 5px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+button, .view-button {
+    background: #0b4edb;
+    color: white;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover, .view-button:hover {
+    background: #073aa3;
+}
+
+.create-button {
+    width: 100%;
+}
+
+@media (max-width: 992px) {
+    .schedule-layout {
+        flex-direction: column;
+    }
+}
+{% endblock %}
+
+
+{% block content %}
+
+<h1 class="schedule-title">Schedule</h1>
+<!-- Page title displayed to the user -->
+
+<div class="schedule-layout">
+<!-- Flexbox layout used to structure page into sections -->
+    <div class="schedule-card meetings-section">
+        <h2>Upcoming Meetings</h2>
+
+        <div class="filter-box">
+            <form method="get">
+                <!-- GET request used to filter meetings by date (covered in Django forms handling) -->
+                <label>Filter by date:</label>
+                <input type="date" name="date" value="{{ filter_date }}">
+                <!-- Django template variable used to retain selected date -->
+                <button type="submit">Filter</button>
+            </form>
+        </div>
+
+        {% for meeting in meetings %}
+        <!-- Django template loop to display dynamic data from the view -->
+            <div class="meeting-item">
+                <p><strong>Host:</strong> {{ meeting.host }}</p>
+                <!-- Variables rendered dynamically from the database (Model → View → Template flow) -->
+                <p><strong>Title:</strong> {{ meeting.title }}</p>
+                <p><strong>Date:</strong> {{ meeting.meeting_date }}</p>
+                <p><strong>Time:</strong> {{ meeting.meeting_time }}</p>
+                <p><strong>Platform:</strong> {{ meeting.platform }}</p>
+                <p><strong>Members:</strong> {{ meeting.team_or_members }}</p>
+                <p><strong>Message:</strong> {{ meeting.message }}</p>
+
+                <button class="view-button" type="button">View</button>
+            </div>
+        {% empty %}
+            <p>No upcoming meetings yet.</p>
+            <!-- handles case when no data is returned -->
+        {% endfor %}
+    </div>
+
+    <div class="schedule-card form-section">
+        <h2>Create Meeting</h2>
+
+        <form method="post">
+            <!-- CSRF protection to prevent cross-site request forgery attacks -->
+            {% csrf_token %}
+            {{ form.as_p }}
+            <!-- Django form automatically rendered (covered in tutorials) -->
+            <button class="create-button" type="submit">Create</button>
+        </form>
+    </div>
+
+</div>
+
+{% endblock %}
+

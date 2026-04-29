@@ -1,0 +1,12 @@
+{% extends "messaging/base.html" %}
+
+{% block content %}
+
+<h1>Summary 📊</h1>
+
+<div class="card">
+    <p><strong>Sent messages:</strong> {{ sent_count }}</p>
+    <p><strong>Received messages:</strong> {{ received_count }}</p>
+</div>
+
+{% endblock %}

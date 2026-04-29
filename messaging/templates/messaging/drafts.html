@@ -1,0 +1,15 @@
+{% extends "messaging/base.html" %}
+
+{% block content %}
+
+<h1>Drafts 📝</h1>
+
+{% for message in messages %}
+<div class="card">
+    {{ message.content }}
+</div>
+{% empty %}
+<p>No drafts yet</p>
+{% endfor %}
+
+{% endblock %}

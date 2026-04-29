@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold">Reports</h2>
+            <p class="text-muted mb-0">Overview of teams and management status</p>
+        </div>
+        <a href="/reports/export/" class="btn btn-success">
+            <i class="bi bi-download"></i> Export Excel
+        </a>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3 text-center">
+                <h6 class="text-muted">Total Teams</h6>
+                <h2 class="fw-bold">{{ total_teams }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3 text-center">
+                <h6 class="text-muted">Teams Without Manager</h6>
+                <h2 class="fw-bold text-danger">{{ no_manager|length }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm p-3 mb-4">
+        <form method="get" class="row g-2">
+            <div class="col-md-4">
+                <select name="department" class="form-select">
+                    <option value="">All Departments</option>
+                    {% for dept in departments %}
+                        <option value="{{ dept.id }}" {% if request.GET.department == dept.id|stringformat:"s" %}selected{% endif %}>
+                            {{ dept.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <button class="btn btn-primary w-100">Filter</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="card shadow-sm p-3 mb-4">
+        <h5 class="mb-3">⚠ Teams Without Managers</h5>
+
+        <ul class="list-group">
+            {% for team in no_manager %}
+                <li class="list-group-item d-flex justify-content-between">
+                    {{ team.name }}
+                    <span class="badge bg-danger">No Manager</span>
+                </li>
+            {% empty %}
+                <li class="list-group-item text-success">
+                    All teams have managers
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="card shadow-sm p-3">
+        <h5 class="mb-3">All Teams</h5>
+
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Team</th>
+                    <th>Department</th>
+                    <th>Manager</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for team in teams %}
+                <tr>
+                    <td class="fw-semibold">{{ team.name }}</td>
+                    <td>{{ team.department.name }}</td>
+                    <td>
+                        {% if team.manager %}
+                            <span class="text-success">
+                                {{ team.manager.first_name }} {{ team.manager.last_name }}
+                            </span>
+                        {% else %}
+                            <span class="text-danger fw-semibold">No Manager</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" class="text-muted">No teams found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Teams | Sky Engineering Portal{% endblock %}
+
+{% block extra_styles %}
+.top-card {
+    background: white;
+    border-radius: 18px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+
+.filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+
+.filter-row select,
+.search-form input {
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+}
+
+.search-form {
+    display: flex;
+    gap: 8px;
+}
+
+.search-form button,
+.card-footer button {
+    background: #0066cc;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+}
+
+.team-card {
+    background: white;
+    border-radius: 18px;
+    padding: 20px;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    display: flex;
+    gap: 18px;
+    align-items: center;
+}
+
+.avatar-img {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.team-info {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.team-info h3 {
+    margin: 0 0 8px;
+}
+
+.team-info p {
+    margin: 4px 0;
+    color: #4b5563;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 28px;
+}
+
+.pagination a {
+    color: #0066cc;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+@media (max-width: 800px) {
+    .team-card,
+    .team-info {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+{% endblock %}
+
+{% block content %}
+
+<div class="top-card">
+    <h2>Teams</h2>
+    <p>Search and filter engineering teams.</p>
+
+    <form method="GET" class="filter-row">
+        <select name="department">
+            <option value="">Department</option>
+            <option value="xTV_Web" {% if department == 'xTV_Web' %}selected{% endif %}>xTV_Web</option>
+            <option value="Native TV's" {% if department == "Native TV's" %}selected{% endif %}>Native TV's</option>
+            <option value="Mobile" {% if department == 'Mobile' %}selected{% endif %}>Mobile</option>
+        </select>
+
+        <select name="sort">
+            <option value="az" {% if sort == 'az' %}selected{% endif %}>Sort by: A-Z</option>
+            <option value="za" {% if sort == 'za' %}selected{% endif %}>Sort by: Z-A</option>
+        </select>
+
+        <div class="search-form">
+            <input
+                type="text"
+                name="q"
+                placeholder="Search teams..."
+                value="{{ query|default:'' }}"
+            />
+            <button type="submit">Go</button>
+        </div>
+    </form>
+</div>
+
+{% for team in teams %}
+<div class="team-card">
+    <img src="{% static 'images/icon.webp' %}" class="avatar-img" alt="Team icon">
+
+    <div class="team-info">
+        <div>
+            <h3>{{ team.name }}</h3>
+            <p>Department: {{ team.department.name }}</p>
+
+            {% if team.team_leader %}
+                <p>Team Leader: {{ team.team_leader }}</p>
+            {% elif team.manager %}
+                <p>Team Leader: {{ team.manager.username }}</p>
+            {% else %}
+                <p>Team Leader: Not assigned</p>
+            {% endif %}
+        </div>
+
+        <div class="card-footer">
+            <a href="{% url 'team_detail' team.id %}">
+                <button>View more details</button>
+            </a>
+        </div>
+    </div>
+</div>
+{% empty %}
+<p>No teams found.</p>
+{% endfor %}
+
+<div class="pagination">
+    {% if teams.has_previous %}
+        <a href="?page={{ teams.previous_page_number }}{% if query_params %}&amp;{{ query_params }}{% endif %}">
+            &laquo; Previous
+        </a>
+    {% endif %}
+
+    <span>Page {{ teams.number }} of {{ teams.paginator.num_pages }}</span>
+
+    {% if teams.has_next %}
+        <a href="?page={{ teams.next_page_number }}{% if query_params %}&amp;{{ query_params }}{% endif %}">
+            Next &raquo;
+        </a>
+    {% endif %}
+</div>
+
+{% endblock %}

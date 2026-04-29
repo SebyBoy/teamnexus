@@ -1,0 +1,16 @@
+{% extends "messaging/base.html" %}
+
+{% block content %}
+
+<h1>New Message ✉️</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    <textarea name="content" placeholder="Write message..."></textarea>
+    <br>
+
+    <button type="submit" name="action" value="send">Send</button>
+    <button type="submit" name="action" value="draft">Save Draft</button>
+</form>
+
+{% endblock %}
