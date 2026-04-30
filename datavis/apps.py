@@ -4,3 +4,4 @@ from django.apps import AppConfig
 class DatavisConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'datavis'
+# config for datavis app, sets default ID type and registers app name
