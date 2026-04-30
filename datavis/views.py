@@ -1,3 +1,4 @@
+# Sebastian Young - w2082018 - Student 6
 import json
 # used to convert Python data into JSON format
 
